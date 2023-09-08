@@ -8,11 +8,15 @@ Weather application displayed through console
 
 
 # Features to be completed:
-~~1. Create basic function for obtaining and displaying current weather~~
+1. Create basic function for obtaining and displaying current weather
 2. Implement other API calls
 3. Format data obtained for respective API calls
 4. Improve user experience with input and output
     - Add exception handling with user inputs or API call issues
 5. Increase modularity between methods and classes
 6. Design graphical interface to facilitate same experience
-7. 
+
+## Unfinished features
+* Function for Forecast, Future, History, and Marine API calls
+* Full-proofing for user input and exception handling
+* Clear formatting for data
