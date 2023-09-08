@@ -25,8 +25,9 @@ public class WeatherAPI {
     private static final String Key = getKey(); // Establish API key for user
     private static final String BaseURL = "http://api.weatherapi.com/v1";   // Base URI for being able to select desired information when requested
 
-    public HttpRequest request = null;
-    public HttpResponse<String> response = null;
+    public static HttpRequest request = null;
+    public static HttpResponse<String> response = null;
+    public static HttpClient client = HttpClient.newHttpClient();   // Only want one client created for each instance
 
     private String Language, AQI, TempUnit, SpeedUnit; 
     // intializes class with default values for getting weather
@@ -50,7 +51,7 @@ public class WeatherAPI {
                 .uri(uri)  // Sets the HttpRequest's request URI (Uniform Resource Identifier, char sequence to identify which logical or physical resource)
                 .header("Authorization", Key)   // .GET() is the default 
                 .build();
-            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if(response.statusCode() != 200){
                 System.out.println("ERROR! Request time out...");
             }else{
@@ -75,19 +76,21 @@ public class WeatherAPI {
 
     // Function for displaying information for the inputted location as well as respective information for inputted search method
     private void displayData(Document doc, Weather.SearchMethod search){
-        Element root = doc.getDocumentElement();
-        System.out.println(root.getNodeName());
+        NodeList list;
+        Element node;
 
-        // Showing weather for one location only so do not need for loop
-        NodeList list = doc.getElementsByTagName("location");
-        Element node = (Element) list.item(0);  // Receives first item in list (only one item since its location)
-        System.out.println("==========================================");
-        System.out.printf("City : %s%n", node.getElementsByTagName("name").item(0).getTextContent());
-        System.out.printf("Region : %s%n", node.getElementsByTagName("region").item(0).getTextContent());
-        System.out.printf("Country : %s%n", node.getElementsByTagName("country").item(0).getTextContent());
-        System.out.printf("Latitude : %s\t  Longitude : %s%n", node.getElementsByTagName("lat").item(0).getTextContent(), node.getElementsByTagName("lon").item(0).getTextContent());
-        System.out.printf("Timezone : %s%n", node.getElementsByTagName("tz_id").item(0).getTextContent());
-        System.out.printf("Local Time : %s%n", node.getElementsByTagName("localtime").item(0).getTextContent());
+        if(search != Weather.SearchMethod.SEARCH){
+            // Showing weather for one location only so do not need for loop
+            list = doc.getElementsByTagName("location");
+            node = (Element) list.item(0);  // Receives first item in list (only one item since its location)
+            System.out.println("==========================================");
+            System.out.printf("City : %s%n", node.getElementsByTagName("name").item(0).getTextContent());
+            System.out.printf("Region : %s%n", node.getElementsByTagName("region").item(0).getTextContent());
+            System.out.printf("Country : %s%n", node.getElementsByTagName("country").item(0).getTextContent());
+            System.out.printf("Latitude : %s\t  Longitude : %s%n", node.getElementsByTagName("lat").item(0).getTextContent(), node.getElementsByTagName("lon").item(0).getTextContent());
+            System.out.printf("Timezone : %s%n", node.getElementsByTagName("tz_id").item(0).getTextContent());
+            System.out.printf("Local Time : %s%n", node.getElementsByTagName("localtime").item(0).getTextContent());
+        }
 
         switch(search){
             case CURRENT:
@@ -102,20 +105,48 @@ public class WeatherAPI {
                 System.out.printf("Humidity : %s%n", node.getElementsByTagName("humidity").item(0).getTextContent());
                 break;
             case FORECAST:
+                /*
+                 *  TODO: Get user input for calling future API [also implement displaying returned data]
+                 */
                 break;
             case FUTURE:
+                /*
+                 *  TODO: Get user input for calling future API [also implement displaying returned data]
+                 */
                 break;
             case HISTORY:
+                /*
+                 *  TODO: Get user input for calling future API [also implement displaying returned data]
+                 */
                 break;
             case MARINE:
+                /*
+                 *  TODO: Get user input for calling future API [also implement displaying returned data]
+                 */
                 break;
             case ASTRONOMY:
-                break;
-            case IP:
-                break;
-            case TIMEZONE:
+                list = doc.getElementsByTagName("astro");
+                node = (Element)list.item(0);
+                System.out.println("==========================================");
+                System.out.printf("Sunrise : %s%n", node.getElementsByTagName("sunrise").item(0).getTextContent());
+                System.out.printf("Sunset : %s%n", node.getElementsByTagName("sunset").item(0).getTextContent()); 
+                System.out.printf("Moonrise : %s%n", node.getElementsByTagName("moonrise").item(0).getTextContent()); 
+                System.out.printf("Moonset : %s%n", node.getElementsByTagName("moonset").item(0).getTextContent());
+                System.out.printf("Moon Phase : %s%n", node.getElementsByTagName("moon_phase").item(0).getTextContent());
+                System.out.printf("Moon Illumination : %s%% %n", node.getElementsByTagName("moon_illumination").item(0).getTextContent());
                 break;
             case SEARCH:
+                list = doc.getElementsByTagName("geo");
+                for(int i = 0; i < list.getLength(); i++){
+                    node = (Element)list.item(i);
+                    System.out.printf("================== Result %d ==================%n", i+1);
+                    System.out.printf("ID : %s%n", node.getElementsByTagName("id").item(0).getTextContent());
+                    System.out.printf("Name : %s%n", node.getElementsByTagName("name").item(0).getTextContent()); 
+                    System.out.printf("Region : %s%n", node.getElementsByTagName("region").item(0).getTextContent()); 
+                    System.out.printf("Country : %s%n", node.getElementsByTagName("country").item(0).getTextContent());
+                    System.out.printf("Latitude : %s\t  Longitude : %s%n", node.getElementsByTagName("lat").item(0).getTextContent(), node.getElementsByTagName("lon").item(0).getTextContent());
+                    System.out.printf("URL : %s%% %n", node.getElementsByTagName("url").item(0).getTextContent());
+                }
                 break;
             default:
         }

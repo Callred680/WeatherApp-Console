@@ -10,8 +10,8 @@ public class Weather{
         HISTORY("/history.xml?key="),    // For obtaining weather from the past 7 days (at most)
         MARINE("/marine.xml?key="),     // For obtaining realtime marine weather
         ASTRONOMY("/astronomy.xml?key="),  // For obtaining realtime astornomy info
-        IP("/ip.xml?key="),         // For obtaining up to date information based on IP address
-        TIMEZONE("/timezone.xml?key="),   // For obtaining time zone information for given input value
+        //IP("/ip.xml?key="),         // For obtaining up to date information based on IP address [Data returned is redundant]
+        //TIMEZONE("/timezone.xml?key="),   // For obtaining time zone information for given input value [Data returned is redundant]
         SEARCH("/search.xml?key=");     // For obtaining weather with incomplete/partial location input
 
         // Constructor for creating enum with values (specific api method call)
@@ -98,28 +98,37 @@ public class Weather{
         ArrayList<String> params = new ArrayList<String>();
         
         // Obtain location to check weather (appended with correct formatting for making API call)
-        System.out.print("Please enter location: ");
+        System.out.print("Please enter location (IF SEARCH SELECTED, PARTIAL STRING INPUTS WILL GENERATE RESULTS): ");
         params.add("&q=" + input.nextLine());
 
         // If API call is one of these methods, additional paramter requests are needed from user
         switch(search){
             case FORECAST:
-                System.out.print("Please enter number of days for forecast(1 to 14): ");
-                params.add("&days=" + input.nextLine());
+                /*
+                 *  TODO: Get user input for calling forecast API [also implement displaying returned data
+                 *  System.out.print("Please enter number of days for forecast(1 to 14): ");
+                 *  params.add("&days=" + input.nextLine());
+                 * 
+                 */
                 break;
             case FUTURE:
+                /*
+                 *  TODO: Get user input for calling future API [also implement displaying returned data]
+                 */
                 break;
             case HISTORY:
+                /*
+                 *  TODO: Get user input for calling history API [also implement displaying returned data]
+                 */
                 break;
             case MARINE:
+                /*
+                 *  TODO: Get user input for calling marine API [also implement displaying returned data]
+                 */
                 break;
             case ASTRONOMY:
-                break;
-            case IP:
-                break;
-            case TIMEZONE:
-                break;
-            case SEARCH:
+                System.out.print("Please enter a date on or after January 1st, 2015 (YYYY-MM-DD format): ");
+                params.add("&dt=" + input.nextLine());
                 break;
             default:
 
